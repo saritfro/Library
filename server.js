@@ -1,8 +1,9 @@
 const express =require("express")
 const app = express()
 const bodyParser = require("body-parser")
-const usersRouter = require("./Routers/usersRouter")
+
 const booksRouter = require("./Routers/booksRouter")
+const usersRouter = require("./Routers/usersRouter")
 const dotenv = require("dotenv")
 dotenv.config()
 
@@ -16,10 +17,8 @@ mongoose.connect(process.env.MONGODB_CONNECT)
 .then(() => console.log("Connected…")).catch(err => console.log(err))
 
 
-
-app.use("/users",usersRouter )
 app.use("/books",booksRouter )
-
+app.use("/users",usersRouter )
 
 
 
