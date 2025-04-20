@@ -7,7 +7,7 @@ const axios = require('axios');
  * @param {Object} req - The request object containing UserId.
  * @param {Object} res - The response object used to send back the desired HTTP response.
  */
-async function getUser(req, res) {
+async function getUser(req, res) {//מתוך הלקוח נוכל לשלוף ספרים נוכחיים והסטורית ספרים
     try {
         const userId = req.params.userId;
         const user = await User.findOne({ userId: userId }); // Search for the User by ID
@@ -129,10 +129,15 @@ async function updateUserSubscriptions(req, res) {
         await user.save(); // Save the updated user
        // debugger
         if (user.subscriptionQuantity === 0) {
-            // Delete the user through API call         זה לא עובד כרגע!!!!!!!!!
+                 
             try {
-                debugger
-                await axios.delete(`/users/deleteUser/${userId}`);
+                // await axios.delete(`/users/deleteUser/${userId}`); זה לא עובד כרגע Delete the user through API call  
+                const deletedUser = await User.findOneAndDelete({ userId: userId }); // Use userId in the query
+                if (!deletedUser) {
+                    return res.status(404).send({ message: "User not found for deletion" }); // Handle case where user is not found
+                }
+                res.send({ message: "User deleted successfully", deletedUser });
+
             } catch (error) {
                 return res.status(500).send({ message: "Error deleting user", error });
             }

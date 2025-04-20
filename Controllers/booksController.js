@@ -20,6 +20,21 @@ async function getBook(req, res) {
     }
 }
 
+async function getAllBooks(req, res) {
+    try {
+       
+        const c = await book.find({ }); // Search for the book by ID
+        if (!c) {
+            return res.status(404).send({ message: "No books" }); // Handle case where the book is not found
+        }
+        res.send(c);
+    } catch (error) {
+        res.status(500).send({ message: "Error retrieving books", error });
+    }
+}
+
+
+
 /**
  * Creates a new book entry in the database.
  * @param {Object} req - The request object containing the book data in the body.
@@ -72,4 +87,4 @@ async function deleteBook(req, res) {
     }
 }
 
-module.exports = { postBook, getBook, putBook, deleteBook };
+module.exports = { postBook, getBook, putBook, deleteBook ,getAllBooks};
