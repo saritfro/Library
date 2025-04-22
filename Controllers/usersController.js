@@ -40,18 +40,20 @@ async function postUser(req, res) {
  * @param {Object} req - The request object containing userId and bookId in query parameters.
  * @param {Object} res - The response object used to send back the desired HTTP response.
  */
-async function BorrowUsersBooks(req, res) {
+
+async function BorrowUsersBooks(req, res) {//😂😂😂😂😂😂😂😂😂🤣🤣🤣🤣🤣🤣
     try {
         const { userId, book_id } = req.params; 
         console.log(userId)
         console.log(book_id)
         const user = await User.findOne({userId:userId});
         console.log(user+"user")
+        const bookExists = await Book.findOne({_id:book_id});
+        console.log(bookExists+"b")
+        
         if (!user) {
             return res.status(404).send({ message: "User not found for borrow" }); 
         }
-        const bookExists = await Book.findById(book_id);
-        console.log(bookExists+"b")
 
         if (!bookExists) {
             return res.status(404).send({ message: "No such book" }); 
@@ -62,6 +64,10 @@ async function BorrowUsersBooks(req, res) {
         //debugger
         user.curBorrowedbooks.push(book_id); // Add the book to current borrowed books
         await user.save(); // Save the updated user
+
+        await Book.updateOne({_id:book_id},{Lender:user._id})
+        await console.log(Book.findOne({_id:book_id}))
+        
 
         res.send(user);
     } catch (error) {

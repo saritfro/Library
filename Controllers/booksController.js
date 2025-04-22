@@ -10,7 +10,7 @@ async function getBook(req, res) {
     try {
         let bookId = req.params.bookId; // Assuming the parameter is named bookId
         console.log(bookId);
-        const c = await book.findOne({ bookId: bookId }); // Search for the book by ID
+        const c = await book.find({ bookId: bookId }); // Search for the book by ID
         if (!c) {
             return res.status(404).send({ message: "Book not found" }); // Handle case where the book is not found
         }
@@ -58,8 +58,8 @@ async function postBook(req, res) {
  */
 async function putBook(req, res) {
     try {
-        let { bookId, userId } = req.params; // Extract bookId and userId from request parameters
-        const c = await book.findOneAndUpdate({ bookId: bookId }, { $set: { Lender: userId } }, { new: true });
+        let { bookId, userId ,lendingDate} = req.params; // Extract bookId and userId from request parameters
+        const c = await book.findOneAndUpdate({ bookId: bookId }, { $set: { Lender: userId ,lendingDate:Date.now} }, { new: true });
         if (!c) {
             return res.status(404).send({ message: "Book not found for update" }); // Handle case where the book is not found
         }
