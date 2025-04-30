@@ -1,6 +1,9 @@
 const user = require("../models/usersModel");
 const book = require("../models/booksModel");
+const xlsx = require('xlsx');
+const path=require("path");
 
+const { error } = require("console");
 /**
  * Retrieves a book by its ID.
  * @param {Object} req - The request object containing bookId.
@@ -50,13 +53,27 @@ async function postBook(req, res) {
         res.status(500).send({ message: "Error saving book", error });
     }
 }
+async function postCsv(req,res) {
+    const url=req.body.url;
+    console.log("csv")
+    try{
+    const workBook=xlsx.readFile(url)
+    const workSheet=workBook.Sheets[workBook.SheetNames[0]]
+    const data = xlsx.utils.sheet_to_json(workSheet);
+    console.log(data);
+     data.forEach(async d=>{let b=await new book(d); await b.save()})
+    res.status(201).send(data);   }
+  catch (error) {
+    res.status(500).send({ message: "Error saving books", error });
+}
+}
 
 /**
  * Updates the lender of a book by its ID.
  * @param {Object} req - The request object containing parameters for bookId and userId.
  * @param {Object} res - The response object used to send back the desired HTTP response.
  */
-async function putBook(req, res) {
+async function putBook(req, res) {//להוסיף עדכון שמעדכן כל דבר שרוצים
     try {
         let { bookId, userId ,lendingDate} = req.params; // Extract bookId and userId from request parameters
         const c = await book.findOneAndUpdate({ bookId: bookId }, { $set: { Lender: userId ,lendingDate:Date.now} }, { new: true });
@@ -69,6 +86,41 @@ async function putBook(req, res) {
     }
 }
 
+/**
+ * Updates the lender of a book by its ID.
+ * @param {Object} req - The request object containing parameters for bookId and userId.
+ * @param {Object} res - The response object used to send back the desired HTTP response.
+ */
+async function putBookLender(req, res) {//להוסיף עדכון שמעדכן כל דבר שרוצים
+    try {
+        let { bookId, userId } = req.params; // Extract bookId and userId from request parameters
+        const c = await book.findOneAndUpdate({ bookId: bookId }, { $set: { Lender: userId ,lendingDate:Date.now} }, { new: true });
+        if (!c) {
+            return res.status(404).send({ message: "Book not found for update" }); // Handle case where the book is not found
+        }
+        res.send(c);
+    } catch (error) {
+        res.status(500).send({ message: "Error updating book", error });
+    }
+}
+/**
+ * Updates the lender of a book by its ID.
+ * @param {Object} req - The request object containing parameters for bookId and userId.
+ * @param {Object} res - The response object used to send back the desired HTTP response.
+ */
+async function putBook(req, res) {// שמעדכן כל דבר שרוצים
+    try {
+        const bookId=req.params.bookId;
+        let update = req.body; // Extract bookId and userId from request parameters
+        let c = await book.findOneAndUpdate({ bookId: bookId }, { $set: update},{new :true});
+        if (!c) {
+            return res.status(404).send({ message: "Book not found for update" }); // Handle case where the book is not found
+        }
+        res.send(c);
+    } catch (error) {
+        res.status(500).send({ message: "Error updating book", error });
+    }
+}
 /**
  * Deletes a book by its ID.
  * @param {Object} req - The request object containing the bookId parameter.
@@ -87,4 +139,4 @@ async function deleteBook(req, res) {
     }
 }
 
-module.exports = { postBook, getBook, putBook, deleteBook ,getAllBooks};
+module.exports = { postBook,postCsv ,getBook, putBook,putBookLender, deleteBook ,getAllBooks};
