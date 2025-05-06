@@ -45,7 +45,7 @@ async function getAllBooks(req, res) {
  */
 async function postBook(req, res) {
     try {
-        const c = new book(req.body); // Create a new book instance with the request body
+        const c = await new book(req.body); // Create a new book instance with the request body
         console.log(req.body);
         await c.save(); // Save the new book to the database
         res.status(201).send(c); // Return a 201 status code for successful creation
@@ -53,21 +53,30 @@ async function postBook(req, res) {
         res.status(500).send({ message: "Error saving book", error });
     }
 }
-async function postCsv(req,res) {
-    const url=req.body.url;
-    console.log("csv")
-    try{
-    const workBook=xlsx.readFile(url)
-    const workSheet=workBook.Sheets[workBook.SheetNames[0]]
-    const data = xlsx.utils.sheet_to_json(workSheet);
-    console.log(data);
-     data.forEach(async d=>{let b=await new book(d); await b.save()})
-    res.status(201).send(data);   }
-  catch (error) {
-    res.status(500).send({ message: "Error saving books", error });
-}
-}
-
+// async function postCsv(req,res) {
+//     console.log("")
+//         if (!req.file) {
+//           return res.status(400).send({ message: 'No file uploaded' });
+//         }
+      
+//         const filePath = path.join(__dirname, '..', 'uploads', req.file.filename);
+      
+//         try {
+//           const workBook = xlsx.readFile(filePath);
+//           const workSheet = workBook.Sheets[workBook.SheetNames[0]];
+//           const data = xlsx.utils.sheet_to_json(workSheet);
+      
+//           for (let d of data) {
+//             const b = new book(d);
+//             await b.save();
+//           }
+      
+//           res.status(201).send({ message: 'Books uploaded successfully', data });
+//         } catch (error) {
+//           console.error(error);
+//           res.status(500).send({ message: "Error saving books", error });
+//         }
+//       };
 /**
  * Updates the lender of a book by its ID.
  * @param {Object} req - The request object containing parameters for bookId and userId.
@@ -128,15 +137,19 @@ async function putBook(req, res) {// שמעדכן כל דבר שרוצים
  */
 async function deleteBook(req, res) {
     try {
-        let bookId = req.params.bookId; 
-        const deletedBook = await book.findOneAndDelete({ bookId: bookId });
+        const _id = req.params._id; 
+        console.log(_id)
+        const deletedBook = await book.findByIdAndDelete (_id);
+        console.log(deleteBook)
         if (!deletedBook) {
-            return res.status(404).send({ message: "Book not found for deletion" }); // Handle case where the book is not found
+            return res.status(404).send({ message: "Book not found for deletion" });
         }
-        res.send({ message: "Book deleted successfully", deletedBook });
+
+        const books = await book.find(); // שליפת הספרים הנותרים
+        res.send(books); // מחזיר את הרשימה המעודכנת
     } catch (error) {
         res.status(500).send({ message: "Error deleting book", error });
     }
 }
 
-module.exports = { postBook,postCsv ,getBook, putBook,putBookLender, deleteBook ,getAllBooks};
+module.exports = { postBook ,getBook, putBook,putBookLender, deleteBook ,getAllBooks};
