@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
 
+
 const userSchema = mongoose.Schema({
     userId:{type: Number,require:true},
-    firstName: String,
-    lastName: String,
+    firstName:{type: String,require:true},
+    lastName:{type: String,require:true},
     subscriptionQuantity: {type: Number,require:true},
     curBorrowedbooks: [{ type: mongoose.Schema.Types.ObjectId, ref: "book" }],
     historyBorrowedbooks: [{

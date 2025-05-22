@@ -1,5 +1,6 @@
-const User = require("../models/usersModel"); 
-const Book = require("../models/booksModel"); 
+const User = require("../Models/usersModel");
+const Book = require("../Models/booksModel");
+
 const axios = require('axios');
 
 /**

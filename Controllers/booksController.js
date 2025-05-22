@@ -1,5 +1,5 @@
-const user = require("../models/usersModel");
-const book = require("../models/booksModel");
+const user = require("../Models/usersModel");
+const book = require("../Models/booksModel");
 const xlsx = require('xlsx');
 const path=require("path");
 
@@ -20,6 +20,17 @@ async function getBook(req, res) {
         res.send(c);
     } catch (error) {
         res.status(500).send({ message: "Error retrieving book", error });
+    }
+}
+
+async function getBooksFields(req, res) {  
+      try {
+        const fields = Object.keys(book.schema.paths)
+            .filter(key => !["_id", "__v"].includes(key)); // מסנן שדות פנימיים
+
+        res.json(fields);
+    } catch (err) {
+        res.status(500).json({ error: "Failed to fetch field names" });
     }
 }
 
@@ -152,4 +163,4 @@ async function deleteBook(req, res) {
     }
 }
 
-module.exports = { postBook ,getBook, putBook,putBookLender, deleteBook ,getAllBooks};
+module.exports = {getBooksFields, postBook ,getBook, putBook,putBookLender, deleteBook ,getAllBooks};

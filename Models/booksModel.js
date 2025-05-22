@@ -1,4 +1,6 @@
 const mongoose=require("mongoose")
+const Settings = require("../Models/settingsModel.js"); 
+
 const book=mongoose.Schema({
  bookId:{type:Number,require:true},
  bookName:String,
@@ -6,14 +8,14 @@ const book=mongoose.Schema({
  publisher:String,
  author:String,
  lendingDate:Date,
- copiesNum:Number,
-category:{
-    type:String,
-    enum:["אנגלית","פעוטות","ילדים","נוער","מבוגר","שואה","עיוני"]
-},
+ copyNumber:Number,
+    category: {
+            type: String,
+        },
+
 status:{
     type:String,
-    enum:["זמין","מושאל"]
+    enum:["בתחזוקה","זמין","מושאל"]
 },
  Lender:{ type:mongoose.Schema.Types.ObjectId,ref:"user"}
 })

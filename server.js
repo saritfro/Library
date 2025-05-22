@@ -1,7 +1,7 @@
 const express =require("express")
 const app = express()
 const bodyParser = require("body-parser")
-
+const settingsRouter = require("./Routers/settingsRouter")
 const booksRouter = require("./Routers/booksRouter")
 const usersRouter = require("./Routers/usersRouter")
 const dotenv = require("dotenv")
@@ -19,6 +19,7 @@ mongoose.connect(process.env.MONGODB_CONNECT)
 
 app.use("/books",booksRouter )
 app.use("/users",usersRouter )
+app.use("/settings",settingsRouter )
 
 
 

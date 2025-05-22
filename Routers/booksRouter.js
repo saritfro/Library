@@ -1,11 +1,12 @@
 const express = require("express");
 const multer = require('multer');
 const router = express.Router();
-const { postBook ,getBook, putBook,putBookLender, deleteBook ,getAllBooks } = require("../Controllers/booksController");
+const { getBooksFields,postBook ,getBook, putBook,putBookLender, deleteBook ,getAllBooks } = require("../Controllers/booksController");
 
   
   // נתיב POST להעלאת קובץ
 // router.post('/upload', upload.single('file'), postCsv);
+router.get("/getBooksFields", getBooksFields);
 router.post("/postBook", postBook);
 router.get("/getBook/:bookId", getBook);
 router.get("/getAllBooks", getAllBooks);
@@ -15,3 +16,4 @@ router.delete("/deleteBook/:_id", deleteBook);
 
 // ייצוא ה-router
 module.exports = router;
+ 
