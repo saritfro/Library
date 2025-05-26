@@ -62,6 +62,9 @@ async function BorrowUsersBooks(req, res) {
         if (user.subscriptionQuantity * process.env.SUBSCRIPTION_QUANTITY === user.curBorrowedbooks.length) {
             return res.status(400).send({ message: "The book quota is full" }); 
         }
+        if (user.curBorrowedbooks.some(book => book.toString() === book_id)) {
+         return res.status(400).send({ message: "The book exists already" });
+}         
         //debugger
         user.curBorrowedbooks.push(book_id); // Add the book to current borrowed books
         await user.save(); // Save the updated user
