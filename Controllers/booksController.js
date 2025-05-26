@@ -13,7 +13,7 @@ async function getBook(req, res) {
     try {
         let bookId = req.params.bookId; // Assuming the parameter is named bookId
         console.log(bookId);
-        const c = await book.find({ bookId: bookId }); // Search for the book by ID
+        const c = await book.find({ bookId: bookId }).populate('Lender'); // Search for the book by ID
         if (!c) {
             return res.status(404).send({ message: "Book not found" }); // Handle case where the book is not found
         }
@@ -37,7 +37,7 @@ async function getBooksFields(req, res) {
 async function getAllBooks(req, res) {
     try {
        
-        const c = await book.find({ }); // Search for the book by ID
+        const c = await book.find({ }).populate('Lender'); // Search for the book by ID
         if (!c) {
             return res.status(404).send({ message: "No books" }); // Handle case where the book is not found
         }
