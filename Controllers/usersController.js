@@ -11,7 +11,7 @@ const axios = require('axios');
 async function getUser(req, res) {//מתוך הלקוח נוכל לשלוף ספרים נוכחיים והסטורית ספרים
     try {
         const userId = req.params.userId;
-        const user = await User.findOne({ userId: userId }); // Search for the User by ID
+        const user = await User.findOne({ userId: userId }).populate('curBorrowedbooks').populate('historyBorrowedbooks.bookId'); // Search for the User by ID
         if (!user) {
             return res.status(404).send({ message: "User not found" }); // Handle case where the User is not found
         }
@@ -42,7 +42,7 @@ async function postUser(req, res) {
  * @param {Object} res - The response object used to send back the desired HTTP response.
  */
 
-async function BorrowUsersBooks(req, res) {//😂😂😂😂😂😂😂😂😂🤣🤣🤣🤣🤣🤣
+async function BorrowUsersBooks(req, res) {
     try {
         const { userId, book_id } = req.params; 
         console.log(userId)
@@ -65,8 +65,7 @@ async function BorrowUsersBooks(req, res) {//😂😂😂😂😂😂😂😂�
         //debugger
         user.curBorrowedbooks.push(book_id); // Add the book to current borrowed books
         await user.save(); // Save the updated user
-
-        await Book.updateOne({_id:book_id},{Lender:user._id})
+        await Book.updateOne({_id:book_id},{Lender:user._id,borrowedDate:Date.now()})
         await console.log(Book.findOne({_id:book_id}))
         
 
@@ -89,13 +88,16 @@ async function ReturnUsersBooks(req, res) {
         if (!user) {
             return res.status(404).send({ message: "User not found for return" }); 
         }
+        if(!bookId){
+            return res.status(404).send({ message: " book id did not send" });
+        }
         if (!user.curBorrowedbooks.includes(bookId)) {
             return res.status(404).send({ message: "No such borrowed book" }); 
         }
 
         await User.findOneAndUpdate(
             { userId: userId },
-            { $push: { historyBorrowedbooks: { bookId: bookId, date: new Date() } } }
+            { $push: { historyBorrowedbooks:  bookId } }
         );
         
         //debugger
@@ -104,10 +106,11 @@ async function ReturnUsersBooks(req, res) {
             { $pull: { curBorrowedbooks: bookId } } // הסרת bookId מרשימת curBorrowedbooks
         );
         const updatedUser = await User.findOne({ userId: userId });//טוען שוב על מנת להחזיר את המשתמש המעודכן
+        await Book.updateOne({_id:bookId},{Lender:null,borrowedDate:null})
 
         res.send(updatedUser);
     } catch (error) {
-        res.status(500).send({ message: "Error updating user's books", error });
+        res.status(500).send({ message: "Error return user's books", error });
     }
 }
 
