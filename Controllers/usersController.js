@@ -15,7 +15,7 @@ async function getUser(req, res) {//מתוך הלקוח נוכל לשלוף ספ
         if (!user) {
             return res.status(404).send({ message: "User not found" }); // Handle case where the User is not found
         }
-        res.send(user);
+        res.status(200).send(user);
     } catch (error) {
         res.status(500).send({ message: "Error retrieving User", error });
     }
