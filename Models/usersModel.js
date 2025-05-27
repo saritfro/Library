@@ -7,10 +7,7 @@ const userSchema = mongoose.Schema({
     lastName:{type: String,require:true},
     subscriptionQuantity: {type: Number,require:true},
     curBorrowedbooks: [{ type: mongoose.Schema.Types.ObjectId, ref: "book" }],
-    historyBorrowedbooks: [{
-        bookId: { type: mongoose.Schema.Types.ObjectId, ref: "book" },
-        borrowedDate: { type: Date, default: Date.now } // שדה לתאריך ההשאלה
-    }]
+    historyBorrowedbooks: [{ type: mongoose.Schema.Types.ObjectId, ref: "book" }]
 });
 
 module.exports = mongoose.model("user", userSchema);
