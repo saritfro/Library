@@ -9,6 +9,7 @@ const axios = require('axios');
  * @param {Object} res - The response object used to send back the desired HTTP response.
  */
 async function getUser(req, res) {//מתוך הלקוח נוכל לשלוף ספרים נוכחיים והסטורית ספרים
+    console.log("in getUser");
     try {
         const userId = req.params.userId;
         const user = await User.findOne({ userId: userId }).populate('curBorrowedbooks').populate('historyBorrowedbooks.bookId'); // Search for the User by ID
