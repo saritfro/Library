@@ -3,13 +3,26 @@ const Book = require("../Models/booksModel");
 
 const axios = require('axios');
 
+
+
+async function getAllUsers(req, res) {
+    try {
+       
+        const c = await User.find({ }) // Search for the book by ID
+        if (!c) {
+            return res.status(404).send({ message: "No users" }); // Handle case where the book is not found
+        }
+        res.send(c);
+    } catch (error) {
+        res.status(500).send({ message: "Error retrieving users", error });
+    }
+}
 /**
  * Retrieves a User by its ID.
  * @param {Object} req - The request object containing UserId.
  * @param {Object} res - The response object used to send back the desired HTTP response.
  */
 async function getUser(req, res) {//מתוך הלקוח נוכל לשלוף ספרים נוכחיים והסטורית ספרים
-    console.log("in getUser");
     try {
         const userId = req.params.userId;
         const user = await User.findOne({ userId: userId }).populate('curBorrowedbooks').populate('historyBorrowedbooks.bookId'); // Search for the User by ID
@@ -183,4 +196,4 @@ async function deleteUser(req, res) {
     }
 }
 
-module.exports = { postUser, getUser, BorrowUsersBooks,ReturnUsersBooks, updateUserSubscriptions, deleteUser };
+module.exports = {getAllUsers, postUser, getUser, BorrowUsersBooks,ReturnUsersBooks, updateUserSubscriptions, deleteUser };

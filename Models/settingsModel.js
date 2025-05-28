@@ -5,7 +5,9 @@ const SettingsModel = mongoose.Schema({
     loanDuration:{type: Number,require:true},//אורך זמן השאלה בשבועות
     lateFee:{type: String,require:true},//   קנס לאיחור בשקלים
     categories:{type: Array,require:true},
-    choosedFields:{type:Array,require:true}
+    choosedFields:{type:Array,require:true},
+    managerPass:{type: String,require:true},
+    numOfBookTosubscription:{type: Number,require:true}
 });
 
 module.exports = mongoose.model("Settings", SettingsModel);

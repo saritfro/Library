@@ -10,9 +10,9 @@ router.get("/getBooksFields", getBooksFields);
 // router.post("/postBook", postBook);
 router.get("/getBook/:bookId", getBook);
 router.get("/getAllBooks", getAllBooks);
-// router.put("/putBook/:bookId", putBook);
+router.put("/putBook/:bookId", putBook);
 router.put("/putBookLender/:bookId/:userId", putBookLender);
-// router.delete("/deleteBook/:_id", deleteBook);
+router.delete("/deleteBook/:_id", deleteBook);
 
 // ייצוא ה-router
 module.exports = router;

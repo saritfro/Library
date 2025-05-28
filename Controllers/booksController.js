@@ -132,7 +132,7 @@ async function putBook(req, res) {// שמעדכן כל דבר שרוצים
     try {
         const bookId=req.params.bookId;
         let update = req.body; // Extract bookId and userId from request parameters
-        let c = await book.findOneAndUpdate({ bookId: bookId }, { $set: update},{new :true});
+        let c = await book.findOneAndUpdate({ bookId: bookId }, { $set: update},{new :true}).populate("Lender");
         if (!c) {
             return res.status(404).send({ message: "Book not found for update" }); // Handle case where the book is not found
         }
@@ -156,7 +156,7 @@ async function deleteBook(req, res) {
             return res.status(404).send({ message: "Book not found for deletion" });
         }
 
-        const books = await book.find(); // שליפת הספרים הנותרים
+        const books = await book.find().populate("Lender"); // שליפת הספרים הנותרים
         res.send(books); // מחזיר את הרשימה המעודכנת
     } catch (error) {
         res.status(500).send({ message: "Error deleting book", error });
